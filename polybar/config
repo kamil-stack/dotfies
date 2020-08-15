@@ -1,0 +1,232 @@
+
+[colors]
+background = ${xrdb:background}
+background-alt = #1D1D1D
+foreground = ${xrdb:color15}
+foreground-alt = ${xrdb:color7}
+primary = ${xrdb:color10}
+secondary = ${xrdb:color9}
+alert = ${xrdb:color1}
+border = ${xrdb:color13}
+desktop = #3e2028
+extend = #de9031
+
+
+[bar/top]
+modules-left = bspwm
+modules-center = date
+modules-right =  netstat memory battery 
+width = 100%
+height = 17
+offset-x = 0
+offset-y = 0
+fixed-center = true
+bottom = false 
+background = ${colors.background-alt}
+foreground = ${colors.foreground-alt}
+line-size = 0
+line-color = #f00
+padding-left = 2
+padding-right = 2
+module-margin-left = 0
+module-margin-right = 0 
+;font-0 = Iosevka Term:style=Regular:size=8;2
+font-0 = Tewi: style=Regulat:size=7;2
+font-1 = Material Icons:antialias=false:size=10;4
+override-redirect = false
+cursor-click = pointer
+cursor-scroll = ns-resize
+separator = "  %{F#555588}%{F-}  "
+border-bottom-size = 1
+border-bottom-color = ${colors.border}
+tray-position = left
+tray-padding = 0
+tray-detached = false
+tray-maxsize = 0
+tray-size = 0
+
+[bar/top-second]
+; modules
+modules-left = 
+modules-center = wave bspwm wave
+modules-right = netstat wlan eth
+width = 100%
+height = 19
+offset-x = 0
+offset-y = 19  
+background = ${colors.background-alt}
+foreground = ${colors.foreground-alt}
+font-0 = "Iosevka Term:style=Regular:size=8;2"
+font-1 = "Material Icons:antialias=false:size=10;4"
+border-top-size = 1
+border-top-color = ${colors.border}
+border-size = 0
+padding-left = 4
+padding-right = 4
+module-margin-left = 1
+module-margin-right = 1
+line-size = 0
+bottom = false
+cursor-click = pointer
+cursor-scroll = ns-resize
+separator = " "
+
+
+
+[module/bspwm]
+type = internal/bspwm
+pin-workspaces = true
+inline-mode = true
+enable-click = true
+enable-scroll = false
+reverse-scroll = false
+fuzzy-match = false
+ 
+;Dunno what this does
+format = <label-state>
+format-padding = 1
+ 
+ws-icon-0=I;I
+ws-icon-1=II;II
+ws-icon-2=III;III
+ws-icon-3=IV;IV
+ws-icon-4=V;V
+ 
+;NOTE: YOU CANNOT HAVE NAME AND ICON
+;TOGETHER ONLY ONE OR THE OTHER!!
+ 
+label-focused = %icon%
+label-focused-foreground = #aca074
+label-focused-padding = 1
+ 
+label-occupied = %icon%
+label-occupied-foreground = #555588
+label-occupied-padding = 1
+ 
+label-empty = %icon%
+label-empty-foreground = ${colors.foreground}
+label-empty-padding = 1
+
+[module/uptime]
+type = custom/script
+exec = uptime|awk '{print $2 " " $3 " " $4 " " $5 " " $6}'|cut -d ',' -f -2
+interval = 6
+format-prefix = " "
+format-prefix-foreground = ${colors.primary}
+format-foreground = ${colors.foreground}
+format-padding = 1
+
+[module/netstat]
+type = internal/network
+interface = wlo1
+interval = 1
+label-connected = " %{F#908975}UP: %{F-}%upspeed% | %{F#75867A}DOWN: %{F-}%downspeed% "
+label-connected-background = ${colors.background-alt}
+
+[module/hostname]
+type = custom/script
+interval = 256
+format = "<label>"
+format-prefix = "  "
+format-prefix-foreground = ${colors.secondary}
+format-padding = 0
+exec = echo "$(uname -n)"
+
+[module/ip]
+type = custom/script
+interval = 2
+format = "<label>"
+format-prefix = "ip: "
+format-prefix-foreground = ${colors.primary}
+format-background = ${colors.background-alt}
+format-padding = 1
+exec = "curl --raw ident.me"
+exec-if = ping -c 1 gentoo.org
+
+[module/xwindow]
+type = internal/xwindow
+label = " %title:0:15:...%"
+label-foreground = ${colors.foreground}
+
+[module/memory]
+type = internal/memory
+interval = 2
+format-prefix = "MEM: "
+format-prefix-foreground = ${colors.primary}
+label = "%percentage_used%%"
+format-padding = 1
+format-background = ${colors.background-alt}
+
+[module/eth]
+type = internal/network
+interface = enp1s0f2
+interval = 3.0
+format-connected = <label-connected>
+format-connected-prefix = "eth: "
+format-connected-padding = 1
+format-connected-prefix-foreground = ${colors.secondary}
+label-connected = "on"
+format-disconnected-padding = 1
+format-disconnected = "eth off"
+format-disconnected-foreground = ${colors.alert}
+
+[module/date]
+type = internal/date
+interval = 5
+date = %a %d %b
+date-alt = %Y-%m-%d
+time = %H:%M
+time-alt = %H:%M
+label = " %time% %date% "
+label-background = ${colors.background-alt}
+
+[module/day]
+type = internal/date
+interval = 5
+date = %a %d %b
+date-alt = %Y-%m-%d
+label = " %date% "
+label-background = ${colors.background-alt}
+
+[module/volume]
+type = custom/script
+interval = 2
+format = <label>
+;format-prefix = " "
+format-prefix = "vol: "
+format-padding = 1
+format-prefix-foreground = ${colors.secondary}
+format-background = ${colors.background-alt}
+exec = echo "$(mpc volume | awk '{print $2}')"
+
+[module/battery]
+type = internal/battery
+battery = BAT0
+adapter = AC
+full-at = 100
+format-charging = %percentage%
+label-charging = "BAT: "
+format-discharging = %percentage%
+label-discharging = "BAT: "
+label-full = %percentage%
+format-full-prefix = "BAT: "
+format-full-background = ${colors.background-alt}
+format-full-prefix-foreground = ${colors.primary}
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-foreground = ${colors.foreground-alt}
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-foreground = ${colors.foreground-alt}
+animation-charging-framerate = 750
+
+
+[settings]
+screenchange-reload = true
+
+[global/wm]
+margin-top = 0
+margin-bottom = 0
+wm-name = bspwm
